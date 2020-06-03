@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<link rel="stylesheet" type="text/css" href="c73a1b4d_1a20045d_0.css" />
+		<style>
+			table{border-collapse: collapse; border: 1px solid gray; border-width: 2px 1px 2px 1px;}
+			th{border: 1px solid gray; padding: 4px; background-color: #ddd;}
+			td{border: 1px solid gray; padding: 4px;}
+			tr:nth-child(2n){background-color: #f8f8f8;}
+			pre{border: 2px solid #d6d6d6; padding: 0px; border-radius: 3px;}
+		</style>
+	</head>
+	<body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space; ">
+		<div>外接SPIFLASH播放音乐及录音. &nbsp;此文档对530X和532X通用
+		</div>
+		<div><br />
+		</div>
+		<div>
+			<div><strong><span style="font-size: 13.5pt">总述</span></strong>
+			</div>
+			<div>&emsp;1) AB53XX_20181116, AB532X_20190203以后的版本, 开始支持外接SPIFALSH 播放MP3文件及录音.
+			</div>
+			<div>&emsp;2)在config.h中, 配置 #define EX_SPIFLASH_SUPPORT宏. 可以打开该功能. 可以单独或同时支持MP3播放或录音.
+			</div>
+			<div>&emsp;3)首先验证芯片和SPIFALSH通信是否正常: 函数 void spi1_init(u32 baud) 中选则SPIFALSH通信的IO口, 先读出正确SPIFLASH_ID并填到该宏中. 一般ID能读到到则说明通信正常了. 也可以打开宏SPIFALSH_MUSIC_BIN_WRITE_TEST 测试示例镜像文件读写是否正常.
+			</div>
+			<div>&emsp;4)为了同时能支持 MP3播放及录音. 需要指定MP3占用的SPIFLASH空间及录音占用的空间. 在以下宏中进行配置,<span style="background-color: rgb(255, 255, 153);">注意空间不要冲突</span>.
+			</div>
+			<div>
+				<pre>
+<code id="ID_168E4A10C2C" class="hljs cpp"> <span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SPIFLASH_MUSIC_BEGIN_ADDR   0           <span class="hljs-comment">//MP3镜像文件起始地址, 目前暂定为0, 不可修改. </span></span>
+ <span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SPIFLASH_MUSIC_END_ADDR    (1024*36)    <span class="hljs-comment">//MP3镜像文件结束地址(根据生成的镜像大小填写)</span></span>
+ <span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SPIFLASH_REC_BEGIN_ADDR    (1024*37)    <span class="hljs-comment">//录音起始地址</span></span>
+ <span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SPIFLASH_REC_END_ADDR      (1024*1024)  <span class="hljs-comment">//录音结束地址</span></span></code></pre>
+				<div><span style="font-size: 13.5pt"><strong><br /></strong></span>
+				</div>
+				<div><br />
+				</div>
+				<div><br />
+				</div>
+				<div><br />
+				</div>
+				<div><br />
+				</div>
+				<div><br />
+				</div>
+				<div><br />
+				</div>
+				<div><br />
+				</div>
+				<div><br />
+				</div>
+				<div><br />
+				</div>
+				<div><br />
+				</div>
+				<div><br />
+				</div>
+				<div><br />
+				</div>
+				<div>&emsp;&nbsp;
+				</div>
+				<div>
+				</div>
+				<div>
+				</div>
+				<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+				</div>
+				<div><br />
+				</div>
+				<div><br />
+				</div>
+				<div><br />
+				</div>
+				<div><br />
+				</div>
+			</div>
+			<div><br />
+			</div>
+		</div>
+		<div><br />
+		</div>
+		<div><br />
+		</div>
+		<div><br />
+		</div>
+		<div><br />
+		</div>
+		<div><br />
+		</div>
+		<div><br />
+		</div>
+		<div><br />
+		</div>
+		<div><br />
+		</div>
+		<div><br />
+		</div>
+		<div><br />
+		</div>
+		<div><br />
+		</div>
+		<div><br />
+		</div>
+	
+<script type="text/javascript" language="javascript" src="jquery.js"></script>
+<script type="text/javascript" language="javascript" src="itemlink.js"></script></body>
+</html>

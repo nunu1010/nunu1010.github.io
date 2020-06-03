@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<style>
+
+body{
+	width: 1024px;
+	margin: 0;
+	padding: 0;
+	color: white;
+	background-color: black;
+}
+
+h1{
+	font-size: 12pt;
+}
+
+ul{
+	list-style-type: none;
+	margin-left: -24px;
+}
+
+li{
+	line-height: 150%;
+}
+
+#ID_Header{
+	border-bottom: 2px dotted black;
+	margin: 0px 4px 8px 0px;
+	padding: 0px 0px 0px 8px
+}
+
+#ID_Footer{
+	border-top: 2px dotted black;
+	margin: 4px 0px 32px 0px;
+	padding: 8px 0px 0px 8px
+}
+
+#ID_Tree{
+	padding: 0px;
+}
+
+#ID_AppData{
+	display: none;
+}
+
+.CLS_NoJump{
+	color: lavender;
+}
+
+.CLS_Jump{
+	color: white;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.CLS_Jump:hover{
+	color: black;
+	background-color: lightblue;
+	text-decoration: none;
+}
+
+.CLS_Indent1{
+	margin-left: 5px;
+}
+
+.CLS_Indent2{
+	margin-left: 16px;
+}
+
+</style>
+
+<title>BlueTrumEasyStart</title>
+
+</head>
+
+<body>
+
+<div id='ID_AppLoading'>
+	<script>document.write('Loading...');</script>
+	<noscript>Javascript must be enabled for viewing this webiste.</noscript>
+</div>
+
+<div id='ID_AppData'>
+
+<ul id='ID_DataInfoItems'>
+	<li level="0" href="3e280638_44e00700_0.html">Welcome To BlueTrum</li>
+	<li level="0" sub="3" href="4c330700_5b0115b9_0.html">开发工具_开发环境搭建</li>
+	<li level="1" href="6b580815_c59103a_0.html">ToolChain及CodeBlock(IDE)的安装</li>
+	<li level="1" href="6b830839_7c260cf3_0.html">程序调试方法</li>
+	<li level="1" sub="2" href="6c770888_66a11639_0.html">工具介绍_工具下载地址</li>
+	<li level="2" href="91ba09b1_ca9823bf_0.html">DownLoader(程序配置_下载_导出_打印调试工具)</li>
+	<li level="2" href="920409ba_cc910f3c_0.html">BT_Tool(FCC及CBT测试工具)</li>
+	<li level="0" sub="6" href="4cc1071f_4499092f_0.html">530X芯片开发</li>
+	<li level="1" sub="1" href="6bdc081e_7ba70cfc_0.html">程序框架简述</li>
+	<li level="2" id="1" href="8fc30952_9161312_0.html">芯片及程序框架简述</li>
+	<li level="1" sub="1" href="6cc8085d_c38131e_0.html">各模块开发常见问题</li>
+	<li level="2" href="928009e3_3a4208ae_0.html">串口模块</li>
+	<li level="1" sub="6" href="6cf9087f_8dff176b_0.html">各功能模式开发常见问题</li>
+	<li level="2" href="932609ff_37db0881_0.html">蓝牙模式</li>
+	<li level="2" href="919d0980_34d21325_0.html">音乐模式[U盘/SD卡播放]</li>
+	<li level="2" href="91ab0987_143904f3_0.html">FM模式</li>
+	<li level="2" href="923a09c7_1748054e_0.html">AUX模式</li>
+	<li level="2" href="91fe09b1_2474066b_0.html">SPEAKER模式</li>
+	<li level="2" sub="3" href="925c09c0_6f1015c8_0.html">外接SPIFLASH播放音乐及录音</li>
+	<li level="3" href="bd2e0b25_458e0996_0.html">MP3音乐播放</li>
+	<li level="3" href="bcf70b01_da8a1145_0.html">录音及录音的播放</li>
+	<li level="3" href="bc6c0af6_4ae609d7_0.html">SPI1硬件接口</li>
+	<li level="1" sub="1" href="6d320890_80740d41_0.html">常见死机问题</li>
+	<li level="2" href="937b0a01_f4171a0f_0.html">中断调用Flash区程序导致死机</li>
+</ul>
+
+</div>
+
+<div id='ID_AppSafeFrame' style='display: none;'>
+
+	<div id='ID_Header'>
+	</div>
+
+	<div id='ID_Workspace'>
+		<div id='ID_Tree'>
+		</div>
+	</div>
+
+	<div id='ID_Footer'>
+	</div>
+
+</div>
+
+</body>
+
+<script type="text/javascript" language="javascript" src="jquery.js"></script>
+
+<script>
+
+var _trim=function(s){return (s||'').replace(/^\s+|\s+$/g, '');};
+var _trim_l=function(s){return (s||'').replace(/^\s+/g, '');};
+var _trim_r=function(s){return (s||'').replace(/\s+$/g, '');};
+
+$(document).ready(function(){
+
+	var bItem0=false, xWin=window.parent._item_content;
+
+	var xTree=function(vItems, iRow, iLvl, jDiv){
+
+		var jUl=$('<ul>'); jDiv.append(jUl);
+	
+		if(iLvl>1) jUl.hide();
+
+		var jLi=undefined, j=iRow;
+		while(j < vItems.length){
+			var xItem=vItems[j];
+			var iLvl2=xItem.iLevel, nSub=xItem.nSub, sTitle=xItem.sTitle||'== Untitled ==', sLink=xItem.sHref;
+
+			if(iLvl2 < iLvl){
+				return j;
+			}else if(iLvl2 > iLvl){
+				j=xTree(vItems, j, iLvl+1, jLi);
+			}else{
+				jLi=$('<li>');
+
+				if(nSub>0){
+
+					var jBtn=$('<img>'); jLi.append(jBtn); jBtn.attr('src', iLvl==0 ? 'icon_minus.gif' : 'icon_plus.gif');
+
+					jBtn.click(function(){
+						var jBtn=$(this);
+						var jUl=jBtn.parent().children('ul');
+						var sImg=jBtn.attr('src');
+						if(sImg.match(/plus/i)){ // if(jUl.css('visibility')=='visible'){
+							jUl.show();
+							jBtn.attr('src', sImg.replace(/plus/i, 'minus'));
+						}else{
+							jUl.hide();
+							jBtn.attr('src', sImg.replace(/minus/i, 'plus'));
+						}
+					});
+				}
+
+				{
+					//var jIco=$('<img>'); jLi.append(jIco); jIco.attr('src', 'custom_icon.gif');
+				}
+
+				if(sLink){
+					var jA=$('<a>');
+					jA.attr('href', sLink);
+					jA.attr('target', '_item_content');
+					jA.addClass('CLS_Jump');
+					if(nSub>0) jA.addClass('CLS_Indent1'); else jA.addClass('CLS_Indent2');
+					jA.text(sTitle); jLi.append(jA);
+
+					/*jA.click(function(){
+						var jA=$(this), sHref=jA.attr('href'), sTitle=jA.text();
+						xWin.location=sHref;
+						return false;
+					});*/
+
+					if(!bItem0 && xWin){
+						xWin.location=sLink;
+						bItem0=true;
+					}
+				}else{
+					var jTxt=$('<span>'); jLi.append(jTxt); jTxt.text(sTitle);
+					jTxt.addClass('CLS_NoJump');
+					if(nSub>0) jTxt.addClass('CLS_Indent1'); else jTxt.addClass('CLS_Indent2');
+				}
+				jUl.append(jLi);
+				j++;
+			}
+		}
+	};
+
+	var jUl=$('#ID_DataInfoItems'), vItems=[];
+	jUl.children('li').each(function(i, xLi){
+		var jLi=$(xLi), xItem={};
+		xItem.iLevel=parseInt(jLi.attr('level')||'');
+		xItem.nSub=parseInt(jLi.attr('sub')||'0');
+		xItem.nID=parseInt(jLi.attr('id')||'-1');
+		xItem.sHref=jLi.attr('href')||'';
+		xItem.sAttach=jLi.attr('attach')||'';
+		xItem.sRelated=jLi.attr('related')||'';
+		xItem.sTitle=jLi.text()||'';
+		vItems[vItems.length]=xItem;
+	});
+
+	jUl.html(''); //clear the internal data when done;
+
+	if(vItems.length>0){
+		xTree(vItems, 0, 0, $('#ID_Tree'));
+		$('#ID_AppLoading').hide();
+		$('#ID_AppSafeFrame').show();
+	}
+
+});
+
+</script>
+
+</html>
