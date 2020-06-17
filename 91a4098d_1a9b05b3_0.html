@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<link rel="stylesheet" type="text/css" href="a7fa1ad9_1a20045d_0.css" />
+		<style>
+			table{border-collapse: collapse; border: 1px solid gray; border-width: 2px 1px 2px 1px;}
+			th{border: 1px solid gray; padding: 4px; background-color: #ddd;}
+			td{border: 1px solid gray; padding: 4px;}
+			tr:nth-child(2n){background-color: #f8f8f8;}
+			pre{border: 2px solid #d6d6d6; padding: 0px; border-radius: 3px;}
+		</style>
+	</head>
+	<body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space; ">
+		<div>GPIO 常见的寄存器如下(以GPIOA为例子):
+		</div>
+		<div>
+			<pre>
+<code id="ID_16972617CFF" class="lang-cpp hljs">GPIOAFEN      <span class="hljs-comment">//设置为0表示作为GPIO使用   //设置为1表示做其它功能性IO,如串口/SPI..</span>
+GPIOADE       <span class="hljs-comment">//数字IO使能: 0为模拟IO, 1 为数字IO,    //如作为AUX输入的IO口就需要设置成模拟IO, 减少数字IO对AUX的干扰.</span>
+GPIOADIR      <span class="hljs-comment">//控制IO的方向:  0为输入, 1为输出.</span>
+GPIOA         <span class="hljs-comment">//IO方向为输入时,读此寄存器的值即得到引脚的高低状态  //IO为输出时, 设置此寄存器的高低即设置对应引脚的高低输出.</span>
+GPIOADRV      <span class="hljs-comment">//0 输出驱动为8mA   //1 输出驱动为32 mA   //IO方向为输出时有效</span>
+  
+<span class="hljs-comment">//以下寄存器控制上拉或下拉, 注意只有当IO设置为输入时, 上下拉才有效.  //IO方向为输出时上下拉自动无效  </span>
+GPIOAPU          <span class="hljs-comment">//10K上拉使能</span>
+GPIOAPD          <span class="hljs-comment">//10K下拉使能</span>
+GPIOAPU200K      <span class="hljs-comment">//200K上拉使能</span>
+GPIOAPD200K      <span class="hljs-comment">//200K下拉使能</span>
+GPIOAPU300       <span class="hljs-comment">//300欧上拉使能</span>
+GPIOAPD300       <span class="hljs-comment">//300欧下拉使能</span></code></pre>
+		</div>
+		<div><br />
+		</div>
+		<div>//----------------------------------------------------------------------------------
+		</div>
+		<div>常见输入输出使用:
+		</div>
+		<div>1. &nbsp;PA0输出高低(点LED灯)示例
+		</div>
+		<div>
+			<pre>
+<code id="ID_169724F45E2" class="lang-cpp hljs"><span class="hljs-comment">//正常启动Main函数</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span>
+</span>{
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Hello AB5300\n"</span>);
+    <span class="hljs-comment">//示例开始</span>
+    GPIOAFEN &amp;= ~BIT(<span class="hljs-number">0</span>);   <span class="hljs-comment">//PA0作为GPIO使用</span>
+    GPIOADE  |= BIT(<span class="hljs-number">0</span>);    <span class="hljs-comment">//PA0设置为数字IO</span>
+    GPIOADIR &amp;= ~BIT(<span class="hljs-number">0</span>);   <span class="hljs-comment">//PA0方向设置为输出</span>
+    WDT_DIS();
+    <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>) {
+        GPIOA |= BIT(<span class="hljs-number">0</span>);       <span class="hljs-comment">//PA0输出高, 等效于GPIOASET = BIT(0);</span>
+        delay_ms(<span class="hljs-number">100</span>);
+        GPIOA &amp;= ~BIT(<span class="hljs-number">0</span>);      <span class="hljs-comment">//PA0输出低, 等效于GPIOACLR = BIT(0);</span>
+        delay_ms(<span class="hljs-number">100</span>);
+    }</code></pre>
+		</div>
+		<div><br />
+		</div>
+		<div>2. 得到PA0引脚状态(作用输入)示例
+		</div>
+		<div>
+			<pre>
+<code id="ID_1697254670B" class="lang-cpp hljs"><span class="hljs-comment">//正常启动Main函数</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span>
+</span>{
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Hello AB5300\n"</span>);
+    <span class="hljs-comment">//示例开始</span>
+    GPIOAFEN &amp;= ~BIT(<span class="hljs-number">0</span>);   <span class="hljs-comment">//PA0作为GPIO使用</span>
+    GPIOADE  |= BIT(<span class="hljs-number">0</span>);    <span class="hljs-comment">//PA0设置为数字IO</span>
+    GPIOADIR |= BIT(<span class="hljs-number">0</span>);    <span class="hljs-comment">//PA0方向设置为输入</span>
+    GPIOAPU  |= BIT(<span class="hljs-number">0</span>);    <span class="hljs-comment">//作为输入,为了有稳定的输入状态(1或0),在外部没上拉或下拉时,需要根据实际情况开内部上拉或下拉</span>
+    WDT_DIS();             <span class="hljs-comment">//测试关看门狗,防止看门狗复位</span>
+    <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>) {
+        delay_ms(<span class="hljs-number">100</span>);
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">"GPIOA0 = 0x%X\n"</span>,GPIOA &amp; BIT(<span class="hljs-number">0</span>));    <span class="hljs-comment">//打印读到的PA0状态</span>
+    }</code></pre>
+		</div>
+		<div>//----------------------------------------------------------------------------------
+		</div>
+		<div>关于&nbsp;GPIOASET/&nbsp;GPIOACLR&nbsp;
+		</div>
+		<div>使用方法如: &nbsp;PA0输出高低(点LED灯)示例中的:&nbsp;
+		</div>
+		<div>GPIOASET = BIT(0); &nbsp; &nbsp;//PA0输出高, 等效于 GPIOA |= BIT(0);
+		</div>
+		<div>GPIOACLR = BIT(0); &nbsp; &nbsp;//PA0输出低, 等效于GPIOA &amp;= ~BIT(<span class="hljs-number">0</span>); &nbsp;&nbsp;
+		</div>
+		<div>&nbsp; &nbsp;
+		</div>
+		<div>此两个寄存器, 主要是优化IO输出高低电平而设置.
+		</div>
+		<div><br />
+		</div>
+		<div>如设置PA0为高, 为了不影响GPIOA上的其它IO的操作, &nbsp;以前程序一般这样写GPIOA |= BIT(<span class="hljs-number">0</span>); &nbsp;
+		</div>
+		<div>这里实际上有三个步骤: &nbsp; 1) 先读出GPIOA. &nbsp;2) 再把GPIOA | BIT(0); &nbsp;3) 把或后的结果再写回GPIOA
+		</div>
+		<div>而使用GPIOASET等效优化后, 直接 一步GPIOASET = BIT(0);即达到 上面三步才能达到的效.
+		</div>
+		<div><br />
+		</div>
+		<div>GPIOASET/&nbsp;GPIOACLR 只对写入为1的位有效, 写入为0的位是不影响它以前的状态的.
+		</div>
+		<div><br />
+		</div>
+		<div><br />
+		</div>
+	
+<script type="text/javascript" language="javascript" src="jquery.js"></script>
+<script type="text/javascript" language="javascript" src="itemlink.js"></script></body>
+</html>

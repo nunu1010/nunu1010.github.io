@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<link rel="stylesheet" type="text/css" href="a7fa1ad9_1a20045d_0.css" />
+		<style>
+			table{border-collapse: collapse; border: 1px solid gray; border-width: 2px 1px 2px 1px;}
+			th{border: 1px solid gray; padding: 4px; background-color: #ddd;}
+			td{border: 1px solid gray; padding: 4px;}
+			tr:nth-child(2n){background-color: #f8f8f8;}
+			pre{border: 2px solid #d6d6d6; padding: 0px; border-radius: 3px;}
+		</style>
+	</head>
+	<body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space; ">
+		<div><span style="color: rgb(0, 0, 128); font-weight: bold; font-size: large; ">中断函数需要全放到公共区(COM区), 常见的如以下三种情况:</span>
+		</div>
+		<div><br />
+		</div>
+		<div>
+			<div>1.中断所有调用到的程序都需要用AT指定段，并且在.ld文件中，将其放在COM RAM区。如以AT(.com_text.*) 打头的，会自动分配到COM 区:&nbsp;
+			</div>
+			<div><br />
+			</div>
+		</div>
+		<div>
+			<div>2.中断中的所有const常量段也需要进行相应的处理。如以AT(.com_rodata.*) 或 AT(.com_text.*)打头的，会自动分配到COM 区:
+			</div>
+		</div>
+		<div><span style="font-size: 13px; ">
+			<pre>
+<code id="ID_168E57C54A8" class="lang-cpp hljs"><span class="hljs-comment">//示例</span>
+AT(.com_rodata.*)     <span class="hljs-comment">//中断中的打印字符串常量放入公共区, *号表示任意名字</span>
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> str_rx[] = <span class="hljs-string">"rx[0x%X]"</span>;  
+AT(.com_text.isr)      <span class="hljs-comment">//中断响应该函数放入公共区</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">uart0_rx_isr</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span>
+</span>{
+    <span class="hljs-keyword">if</span> (UART0CON&amp;BIT(<span class="hljs-number">9</span>)){
+        <span class="hljs-built_in">printf</span>(str_rx,UART0DATA);
+        UART0CPND =BIT(<span class="hljs-number">9</span>);<span class="hljs-comment">//Clear Pending</span>
+    }
+    ...
+}</code></pre></span>
+		</div>
+		<div>
+			<div><span style="font-size: 10pt">&nbsp; &nbsp; 可以在map.txt文件中看到: str_rx常量和uart0_rx_isr函数均在公共区. &nbsp;</span>
+			</div>
+			<div><span style="font-size: 10pt">&nbsp; &nbsp; 0x00000000000173fc&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; str_rx</span>
+			</div>
+			<div><span style="font-size: 10pt">&nbsp; &nbsp; 0x0000000000014418 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; uart0_rx_isr</span>
+			</div>
+			<div><span style="font-size: 10pt"><br /></span>
+			</div>
+			<div><span style="font-size: 10pt">
+				<div><span style="font-size: 10pt"><span style="color: #993400">常量表放入com区的写法示例</span></span>
+				</div>
+				<div>
+					<div style="font-size: 10pt; ">AT(.com_text*)
+					</div>
+					<div style="font-size: 10pt; ">const int q_tbl[3] = {1,2,3};
+					</div>
+					<div style="font-size: 10pt; ">AT(.com_text*)
+					</div>
+					<div style="font-size: 10pt; ">const char strx[] = &quot;Com String&quot;;
+					</div>
+					<div style="font-size: 10pt; ">&nbsp;&nbsp;
+					</div>
+				</div></span>
+			</div>
+			<div>3.中断响应函数中,<span style="color: rgb(255, 0, 0); "> <span style="font-weight: bold;">不能调用switch 语句</span>,</span> switch编译后, 有关跳转的常量表会默认存放到flash区中,引起同样的问题. 请用 if else 代替switch.
+			</div>
+		</div>
+		<div><br />
+		</div>
+		<div><br />
+		</div>
+		<div><span style="font-size: 10pt; "><br /></span>
+		</div>
+	
+<script type="text/javascript" language="javascript" src="jquery.js"></script>
+<script type="text/javascript" language="javascript" src="itemlink.js"></script></body>
+</html>

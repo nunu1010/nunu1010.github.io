@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<link rel="stylesheet" type="text/css" href="a7fa1ad9_1a20045d_0.css" />
+		<style>
+			body, table{font-family: 微软雅黑; font-size: 10pt}
+			
+			table{border-collapse: collapse; border: 1px solid gray; border-width: 2px 1px 2px 1px;}
+			th{border: 1px solid gray; padding: 4px; background-color: #ddd;}
+			td{border: 1px solid gray; padding: 4px;}
+			tr:nth-child(2n){background-color: #f8f8f8;}
+			pre{border: 2px solid #d6d6d6; padding: 0px; border-radius: 3px;}
+		</style>
+	</head>
+	<body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space; ">
+		<div>
+			<pre>
+<code id="ID_16B08038224" class="lang-cpp hljs"><span class="hljs-function"><span class="hljs-keyword">//以下是UART0中断接收,查询发送示例(uart0_putc)</span></span></code><code id="ID_16B08038224" class="lang-cpp hljs"><span class="hljs-function"><span class="hljs-keyword">typedef</span> <span class="hljs-title">void</span> <span class="hljs-params">(*<span class="hljs-keyword">isr_t</span>)</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>;
+<span class="hljs-keyword">isr_t</span> register_isr(<span class="hljs-keyword">int</span> <span class="hljs-built_in">vector</span>, <span class="hljs-keyword">isr_t</span> isr);
+
+
+AT(.com_text.uart)
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">uart0_putc</span><span class="hljs-params">(<span class="hljs-keyword">char</span> ch)</span>
+</span>{
+    <span class="hljs-keyword">while</span> (!(UART0CON &amp; BIT(<span class="hljs-number">8</span>)));
+    UART0DATA = ch;
+}
+
+AT(.com_text.uart)
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">uart0_isr_func</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span>
+</span>{
+    <span class="hljs-keyword">if</span>(UART0CON &amp; BIT(<span class="hljs-number">9</span>))       <span class="hljs-comment">//RX one byte finish</span>
+    {
+        UART0CPND |= BIT(<span class="hljs-number">9</span>);    <span class="hljs-comment">//clear pending</span>
+        uart0_putc(UART0DATA);  <span class="hljs-comment">//print recv data</span>
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">uart0_init</span><span class="hljs-params">(u32 baud)</span>
+</span>{
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">"uart0_init\n"</span>);
+    u32 baud_cfg;
+    <span class="hljs-comment">//PA0_RX, PA1_TX example</span>
+<span class="hljs-comment">//    GPIOAFEN |= (BIT(0) | BIT(1));                            //Port Function EN</span>
+<span class="hljs-comment">//    GPIOADIR &amp;= ~BIT(1);</span>
+<span class="hljs-comment">//    GPIOADIR |= BIT(0);</span>
+<span class="hljs-comment">//    GPIOAPU  |= (BIT(0) | BIT(1));</span>
+<span class="hljs-comment">//    GPIOADE  |= (BIT(0) | BIT(1));</span>
+<span class="hljs-comment">//    FUNCMCON0 |= ((0xFL &lt;&lt; 12) | (0xFL &lt;&lt; 8));</span>
+<span class="hljs-comment">//    FUNCMCON0 |= (0x5L &lt;&lt; 12) | (0x5L &lt;&lt; 8);       // MAP G5 RX-&gt;12~15bit TX-&gt;8~11bit</span>
+
+    <span class="hljs-comment">//PB3_RX, PB4_TX example</span>
+    GPIOBFEN |= (BIT(<span class="hljs-number">3</span>) | BIT(<span class="hljs-number">4</span>));                            <span class="hljs-comment">//Port Function EN</span>
+    GPIOBDIR &amp;= ~BIT(<span class="hljs-number">3</span>);
+    GPIOBDIR |= BIT(<span class="hljs-number">4</span>);
+    GPIOBPU  |= (BIT(<span class="hljs-number">3</span>) | BIT(<span class="hljs-number">4</span>));
+    GPIOBDE  |= (BIT(<span class="hljs-number">3</span>) | BIT(<span class="hljs-number">4</span>));
+    FUNCMCON0 |= ((<span class="hljs-number">0xF</span>L &lt;&lt; <span class="hljs-number">12</span>) | (<span class="hljs-number">0xF</span>L &lt;&lt; <span class="hljs-number">8</span>));
+    FUNCMCON0 |= (<span class="hljs-number">0x3</span>L &lt;&lt; <span class="hljs-number">12</span>) | (<span class="hljs-number">0x3</span>L &lt;&lt; <span class="hljs-number">8</span>);      <span class="hljs-comment">// MAP G3, PB3/PB4</span>
+
+    UART0CON = <span class="hljs-number">0</span>;          <span class="hljs-comment">//uart reset</span>
+
+    UART0CON |= BIT(<span class="hljs-number">5</span>);      <span class="hljs-comment">//uart_clk sel uart_inc</span>
+    CLKCON1 |= BIT(<span class="hljs-number">14</span>);      <span class="hljs-comment">//uart_inc form x26m_div2</span>
+    baud_cfg = (<span class="hljs-number">26000000</span>/<span class="hljs-number">2</span>)/baud - <span class="hljs-number">1</span>;
+    UART0BAUD = (baud_cfg &lt;&lt; <span class="hljs-number">16</span>) | baud_cfg; <span class="hljs-comment">//UARTBAUD = Fsys_clock/BaudRate-1  //UARTBAUD= (26000000/2)/baud-1 //16~31 rx_baud  0~15 tx_baud</span>
+    
+    UART0CON |= (BIT(<span class="hljs-number">7</span>) | BIT(<span class="hljs-number">2</span>) | BIT(<span class="hljs-number">0</span>)); <span class="hljs-comment">// BIT(7)RX en，BIT(2)RX INT en，BIT(0)uart en</span>
+    register_isr(IRQ_UART_VECTOR, uart0_isr_func);
+    PICPR &amp;= ~BIT(IRQ_UART_VECTOR);
+    PICEN |= BIT(IRQ_UART_VECTOR);
+<span class="hljs-comment">//    while(1) {   //TEST</span>
+<span class="hljs-comment">//        WDT_CLR();</span>
+<span class="hljs-comment">//        //printf("u0--");</span>
+<span class="hljs-comment">//        //uart0_putc(0x55);</span>
+<span class="hljs-comment">//        delay_ms(100);</span>
+<span class="hljs-comment">//    }</span>
+}</code></pre>
+		</div>
+	
+<script type="text/javascript" language="javascript" src="jquery.js"></script>
+<script type="text/javascript" language="javascript" src="itemlink.js"></script></body>
+</html>
